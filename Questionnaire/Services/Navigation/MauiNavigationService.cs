@@ -6,8 +6,6 @@ public class MauiNavigationService : INavigationService
     {
     }
 
-    public Task InitializeAsync() => NavigateToAsync("Main");
-
     public Task NavigateToAsync(string route, IDictionary<string, object> routeParameters = null)
     {
         var shellNavigation = new ShellNavigationState(route);

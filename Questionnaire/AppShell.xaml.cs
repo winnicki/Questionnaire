@@ -12,7 +12,7 @@ public partial class AppShell : Shell
         InitializeRouting();
         InitializeComponent();
     }
-
+    
     private static void InitializeRouting()
     {
         Routing.RegisterRoute("Main", typeof(MainView));

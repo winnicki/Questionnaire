@@ -52,7 +52,7 @@ public static class MauiProgram
 
     private static MauiAppBuilder RegisterViews(this MauiAppBuilder mauiAppBuilder)
     {
-        mauiAppBuilder.Services.AddTransient<MainView>();
+        mauiAppBuilder.Services.AddSingleton<MainView>();
         mauiAppBuilder.Services.AddTransient<QuestionView>();
 
         return mauiAppBuilder;

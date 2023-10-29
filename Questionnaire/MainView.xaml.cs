@@ -1,14 +1,13 @@
-﻿namespace Questionnaire;
+﻿using Questionnaire.ViewModels;
+using Questionnaire.Views;
 
-public partial class MainView : ContentPage
+namespace Questionnaire;
+
+public partial class MainView : ContentPageBase
 {
-    public MainView()
+    public MainView(MainViewModel viewModel)
     {
         InitializeComponent();
-    }
-
-    private void OnStartClicked(object sender, EventArgs e)
-    {
-        
+        BindingContext = viewModel;
     }
 }
