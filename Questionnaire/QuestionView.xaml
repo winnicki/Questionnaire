@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:Questionnaire.ViewModels"
+             x:Class="Questionnaire.QuestionView"
+             x:DataType="viewmodels:QuestionViewModel">
+    <ContentPage.Content>
+        <ScrollView>
+            <VerticalStackLayout
+                VerticalOptions="Center">
+                <Label
+                    HorizontalTextAlignment="Center"
+                    Text="{Binding Question.Text}"/>
+                <HorizontalStackLayout
+                    HorizontalOptions="Center">
+                    <Button
+                        Text="False"
+                        Command="{Binding AnswerCommand, ConverterParameter=false}"/>
+                    <Button
+                        Text="True"
+                        Command="{Binding AnswerCommand, ConverterParameter=true}"/>
+                </HorizontalStackLayout>
+                <HorizontalStackLayout
+                    HorizontalOptions="Center">
+                    <Button
+                        Text="Previous"/>
+                    <Button
+                        Text="Next"/>
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+            
+    </ContentPage.Content>
+</ContentPage>
