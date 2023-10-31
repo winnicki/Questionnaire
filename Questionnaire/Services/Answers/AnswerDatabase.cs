@@ -16,4 +16,11 @@ public class AnswerDatabase : IAnswerDatabase
     {
         return Task.FromResult(SavedAnswers);
     }
+
+    public Task<Answer> GetAnswer(int question)
+    {
+        return SavedAnswers.TryGetValue(question, out var previousAnswer) 
+            ? Task.FromResult(previousAnswer) 
+            : null;
+    }
 }

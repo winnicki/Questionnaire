@@ -33,4 +33,14 @@ public class AnswerService : IAnswerService
         var savedAnswers = await _answerDatabase.GetAnswers(questions);
         return savedAnswers.OrderBy(kvp => kvp.Key).Select(kvp => kvp.Value);
     }
+
+    public async Task<Answer> GetAnswer(Question question)
+    {
+        if (question is null)
+        {
+            return null;
+        }
+        
+        return await _answerDatabase.GetAnswer(question.Number);
+    }
 }

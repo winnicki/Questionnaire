@@ -1,6 +1,4 @@
-using System.Collections.Immutable;
 using System.Windows.Input;
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Questionnaire.Extensions;
 using Questionnaire.Models;
@@ -15,8 +13,7 @@ public class QuestionViewModel : ViewModelBase
     private readonly IQuestionService _questionService;
     private readonly IAnswerService _answerService;
 
-    private int _currentQuestion;
-    private ImmutableArray<Question> _questions;
+    private int _questionNumber;
 
     private Question _question;
     public Question Question
@@ -25,9 +22,23 @@ public class QuestionViewModel : ViewModelBase
         private set => SetProperty(ref _question, value);
     }
 
-    public ICommand AnswerCommand { get; private set; }
+    private bool _isFalseSelected;
+    public bool IsFalseSelected
+    {
+        get => _isFalseSelected;
+        private set => SetProperty(ref _isFalseSelected, value);
+    }
+    
+    private bool _isTrueSelected;
+    public bool IsTrueSelected
+    {
+        get => _isTrueSelected;
+        private set => SetProperty(ref _isTrueSelected, value);
+    }
+
+    public IAsyncRelayCommand<bool> AnswerCommand { get; private set; }
     public ICommand PreviousCommand { get; private set; }
-    public ICommand NextCommand { get; private set; }
+    public IAsyncRelayCommand NextCommand { get; private set; }
 
     public QuestionViewModel(INavigationService navigationService, IQuestionService questionService, IAnswerService answerService) : base(navigationService)
     {
@@ -36,30 +47,42 @@ public class QuestionViewModel : ViewModelBase
         
         AnswerCommand = new AsyncRelayCommand<bool>(SaveAnswer);
         PreviousCommand = new AsyncRelayCommand(GoPrevious);
-        NextCommand = new AsyncRelayCommand(GoNext);
+        NextCommand = new AsyncRelayCommand(GoNext, GoNextCanExecute);
     }
 
     public override void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         base.ApplyQueryAttributes(query);
-        _currentQuestion = query.ValueAsInt(nameof(Question.Number));
+        _questionNumber = query.ValueAsInt(nameof(Question.Number));
     }
     
     public override async Task InitializeAsync()
     {
-        if (_currentQuestion == 1)
+        if (_questionNumber == 1 && _questionService.QuestionnaireLength == 0)
         {
-            _questions = await _questionService.GetRandomQuestionnaire();
+            await _questionService.GenerateQuestionnaire();
         }
-        
-        if (_currentQuestion > 0 && _currentQuestion < _questions.Length)
+
+        Question ??= _questionService.GetQuestion(_questionNumber);
+        NextCommand.NotifyCanExecuteChanged();
+        await LoadUsersAnswer();
+    }
+
+    private async Task LoadUsersAnswer()
+    {
+        var previousAnswer = await _answerService.GetAnswer(Question);
+        if (previousAnswer != null)
         {
-            Question = _questions[0];
+            IsFalseSelected = !previousAnswer.Value;
+            IsTrueSelected = previousAnswer.Value;
         }
     }
     
     private async Task SaveAnswer(bool value)
     {
+        IsFalseSelected = !value;
+        IsTrueSelected = value;
+        
         await _answerService.SaveAnswer(value, Question);
     }
     
@@ -68,6 +91,11 @@ public class QuestionViewModel : ViewModelBase
         await NavigationService.NavigateToAsync(
             "/Question",
             new Dictionary<string, object> { { nameof(Models.Question.Number), Question.Number + 1 } });
+    }
+
+    private bool GoNextCanExecute()
+    {
+        return _questionService != null && Question?.Number < _questionService.QuestionnaireLength;
     }
 
     private async Task GoPrevious()
