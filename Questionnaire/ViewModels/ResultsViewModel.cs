@@ -26,7 +26,7 @@ public class ResultsViewModel : ViewModelBase
         var questionnaire = await _questionService.GetQuestionnaire();
         var answers = await _answerService.GetAnswers(questionnaire);
 
-        foreach (var answer in answers)
+        foreach (var answer in answers.OrderBy(a => a.Question.Number))
         {
             Answers.Add(answer);
         }
