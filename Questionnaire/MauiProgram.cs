@@ -46,6 +46,7 @@ public static class MauiProgram
     {
         mauiAppBuilder.Services.AddSingleton<MainViewModel>();
         mauiAppBuilder.Services.AddTransient<QuestionViewModel>();
+        mauiAppBuilder.Services.AddTransient<ResultsViewModel>();
 
         return mauiAppBuilder;
     }
@@ -54,6 +55,7 @@ public static class MauiProgram
     {
         mauiAppBuilder.Services.AddSingleton<MainView>();
         mauiAppBuilder.Services.AddTransient<QuestionView>();
+        mauiAppBuilder.Services.AddTransient<ResultsView>();
 
         return mauiAppBuilder;
     }

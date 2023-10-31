@@ -7,6 +7,6 @@ public class Answer : BindableObject
     public Guid Id { get; set; }
     public bool Value { get; set; }
     
-    [JsonIgnore]
+    // [JsonIgnore]
     public Question Question { get; set; }
 }

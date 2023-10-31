@@ -35,10 +35,18 @@ public class QuestionViewModel : ViewModelBase
         get => _isTrueSelected;
         private set => SetProperty(ref _isTrueSelected, value);
     }
+    
+    private bool _isLastQuestion;
+    public bool IsLastQuestion
+    {
+        get => _isLastQuestion;
+        private set => SetProperty(ref _isLastQuestion, value);
+    }
 
     public IAsyncRelayCommand<bool> AnswerCommand { get; private set; }
     public ICommand PreviousCommand { get; private set; }
     public IAsyncRelayCommand NextCommand { get; private set; }
+    public ICommand FinishCommand { get; private set; }
 
     public QuestionViewModel(INavigationService navigationService, IQuestionService questionService, IAnswerService answerService) : base(navigationService)
     {
@@ -48,6 +56,7 @@ public class QuestionViewModel : ViewModelBase
         AnswerCommand = new AsyncRelayCommand<bool>(SaveAnswer);
         PreviousCommand = new AsyncRelayCommand(GoPrevious);
         NextCommand = new AsyncRelayCommand(GoNext, GoNextCanExecute);
+        FinishCommand = new AsyncRelayCommand(Finish);
     }
 
     public override void ApplyQueryAttributes(IDictionary<string, object> query)
@@ -66,6 +75,8 @@ public class QuestionViewModel : ViewModelBase
         Question ??= _questionService.GetQuestion(_questionNumber);
         NextCommand.NotifyCanExecuteChanged();
         await LoadUsersAnswer();
+        
+        IsLastQuestion = Question != null && _questionService != null && Question.Number == _questionService.QuestionnaireLength;
     }
 
     private async Task LoadUsersAnswer()
@@ -101,5 +112,10 @@ public class QuestionViewModel : ViewModelBase
     private async Task GoPrevious()
     {
         await NavigationService.PopAsync();
+    }
+    
+    private async Task Finish()
+    {
+        await NavigationService.NavigateToAsync("/Results");
     }
 }

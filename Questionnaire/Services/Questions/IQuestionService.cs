@@ -7,4 +7,5 @@ public interface IQuestionService
     Task GenerateQuestionnaire(int count = 10);
     Question GetQuestion(int number);
     int QuestionnaireLength { get; }
+    Task<IEnumerable<Question>> GetQuestionnaire();
 }

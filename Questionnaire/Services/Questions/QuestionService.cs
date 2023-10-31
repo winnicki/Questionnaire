@@ -12,7 +12,12 @@ public class QuestionService : IQuestionService
     public int QuestionnaireLength => _questions != null
         ? _questions.Length
         : 0;
-    
+
+    public Task<IEnumerable<Question>> GetQuestionnaire()
+    {
+        return Task.FromResult((IEnumerable<Question>)_questions);
+    }
+
     public QuestionService(IQuestionDatabase questionDatabase)
     {
         _questionDatabase = questionDatabase;

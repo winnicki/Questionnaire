@@ -41,6 +41,10 @@
                         Text="Next"
                         Command="{Binding NextCommand}"/>
                 </HorizontalStackLayout>
+                <Button
+                    Text="Finish"
+                    Command="{Binding FinishCommand}"
+                    IsVisible="{Binding IsLastQuestion}"/>
             </VerticalStackLayout>
         </ScrollView>
     </ContentPage.Content>
